@@ -1,0 +1,329 @@
+about:
+  date: November 28, 2024 16:57:25
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+authentication: '{system-default}'
+info:
+  number_relationships: 11
+  number_tables: 12
+info_toggle_checked: true
+resources:
+  Category:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: description
+    - name: id
+    description: This page shows product categories.
+    info_list: This page shows product categories.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - category_id
+      name: ProductCategoryList
+      resource: ProductCategory
+    type: Category
+    user_key: name
+  Customer:
+    attributes:
+    - label: ' first_name*'
+      name: first_name
+      search: true
+      sort: true
+    - name: last_name
+    - name: email
+    - name: phone_number
+    - name: id
+    - name: date_joined
+      type: DATETIME
+    description: This page shows customer information.
+    info_list: This page shows customer information.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - customer_id
+      name: CustomerContactList
+      resource: CustomerContact
+    - direction: tomany
+      fks:
+      - customer_id
+      name: OrderList
+      resource: Order
+    type: Customer
+    user_key: first_name
+  CustomerContact:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: customer_id
+    - name: sales_rep_id
+    - name: contact_date
+      type: DATETIME
+    - name: notes
+    description: This table records customer contacts and interactions.
+    info_list: This table records customer contacts and interactions.
+    tab_groups:
+    - direction: toone
+      fks:
+      - customer_id
+      name: customer
+      resource: Customer
+    - direction: toone
+      fks:
+      - sales_rep_id
+      name: sales_rep
+      resource: SalesRep
+    type: CustomerContact
+    user_key: id
+  Discount:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: product_id
+    - name: discount_amount
+    - name: start_date
+      type: DATETIME
+    - name: end_date
+      type: DATETIME
+    description: This table defines available discounts for products.
+    info_list: This table defines available discounts for products.
+    tab_groups:
+    - direction: toone
+      fks:
+      - product_id
+      name: product
+      resource: Product
+    type: Discount
+    user_key: id
+  Order:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: customer_id
+    - name: total_amount
+    - name: date_placed
+      type: DATETIME
+    description: This table records each order placed by a customer.
+    info_list: This table records each order placed by a customer.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - order_id
+      name: OrderItemList
+      resource: OrderItem
+    - direction: toone
+      fks:
+      - customer_id
+      name: customer
+      resource: Customer
+    type: Order
+    user_key: id
+  OrderItem:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: order_id
+    - name: product_id
+    - name: quantity
+    description: This table captures the products in each order.
+    info_list: This table captures the products in each order.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - order_item_id
+      name: ReturnList
+      resource: Return
+    - direction: toone
+      fks:
+      - order_id
+      name: order
+      resource: Order
+    - direction: toone
+      fks:
+      - product_id
+      name: product
+      resource: Product
+    type: OrderItem
+    user_key: id
+  Product:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: description
+    - name: price
+    - name: stock
+    - name: id
+    description: This page shows product details that are available for sale.
+    info_list: This page shows product details that are available for sale.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - product_id
+      name: DiscountList
+      resource: Discount
+    - direction: tomany
+      fks:
+      - product_id
+      name: OrderItemList
+      resource: OrderItem
+    - direction: tomany
+      fks:
+      - product_id
+      name: ProductCategoryList
+      resource: ProductCategory
+    - direction: tomany
+      fks:
+      - product_id
+      name: ProductSupplierList
+      resource: ProductSupplier
+    type: Product
+    user_key: name
+  ProductCategory:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: category_id
+    - name: product_id
+    description: This table maps products to categories.
+    info_list: This table maps products to categories.
+    tab_groups:
+    - direction: toone
+      fks:
+      - category_id
+      name: category
+      resource: Category
+    - direction: toone
+      fks:
+      - product_id
+      name: product
+      resource: Product
+    type: ProductCategory
+    user_key: id
+  ProductSupplier:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: product_id
+    - name: supplier_id
+    description: This junction table maps products to suppliers.
+    info_list: This junction table maps products to suppliers.
+    tab_groups:
+    - direction: toone
+      fks:
+      - product_id
+      name: product
+      resource: Product
+    - direction: toone
+      fks:
+      - supplier_id
+      name: supplier
+      resource: Supplier
+    type: ProductSupplier
+    user_key: id
+  Return:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: order_item_id
+    - name: return_date
+      type: DATETIME
+    - name: refund_amount
+    description: This table records product returns by customers.
+    info_list: This table records product returns by customers.
+    tab_groups:
+    - direction: toone
+      fks:
+      - order_item_id
+      name: order_item
+      resource: OrderItem
+    type: Return
+    user_key: id
+  SalesRep:
+    attributes:
+    - label: ' first_name*'
+      name: first_name
+      search: true
+      sort: true
+    - name: last_name
+    - name: email
+    - name: id
+    description: This page shows information about sales representatives.
+    info_list: This page shows information about sales representatives.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - sales_rep_id
+      name: CustomerContactList
+      resource: CustomerContact
+    type: SalesRep
+    user_key: first_name
+  Supplier:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: address
+    - name: phone
+    - name: email
+    - name: id
+    description: This page shows supplier information.
+    info_list: This page shows supplier information.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - supplier_id
+      name: ProductSupplierList
+      resource: ProductSupplier
+    type: Supplier
+    user_key: name
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: LL
+    decimal_max: '1000000000'
+    decimal_min: '0'
+    decimal_separator: .
+    detail_mode: tab
+    edit_on_mode: dblclick
+    exclude_listpicker: false
+    include_translation: 'false'
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    new_mode: dialog
+    pick_style: list
+    row_height: small,
+    serviceType: OntimizeEE
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: 'false'

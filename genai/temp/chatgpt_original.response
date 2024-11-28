@@ -1,0 +1,270 @@
+{
+    "models": [
+        {
+            "classname": "Customer",
+            "code": "class Customer(Base):\n    \"\"\"description: This table stores customer information.\"\"\"\n    __tablename__ = 'customer'\n\n    id = Column(Integer, primary_key=True)\n    first_name = Column(String)\n    last_name = Column(String)\n    email = Column(String)\n    phone_number = Column(String)\n    date_joined = Column(DateTime)\n",
+            "sqlite_create": "CREATE TABLE customer (\n    id INTEGER PRIMARY KEY,\n    first_name TEXT,\n    last_name TEXT,\n    email TEXT,\n    phone_number TEXT,\n    date_joined DATETIME\n);",
+            "description": "This table stores customer information.",
+            "name": "Customer"
+        },
+        {
+            "classname": "Product",
+            "code": "class Product(Base):\n    \"\"\"description: This table stores product details that are available for sale.\"\"\"\n    __tablename__ = 'product'\n\n    id = Column(Integer, primary_key=True)\n    name = Column(String)\n    description = Column(String)\n    price = Column(Integer)\n    stock = Column(Integer)\n",
+            "sqlite_create": "CREATE TABLE product (\n    id INTEGER PRIMARY KEY,\n    name TEXT,\n    description TEXT,\n    price INTEGER,\n    stock INTEGER\n);",
+            "description": "This table stores product details that are available for sale.",
+            "name": "Product"
+        },
+        {
+            "classname": "Order",
+            "code": "class Order(Base):\n    \"\"\"description: This table records each order placed by a customer.\"\"\"\n    __tablename__ = 'order'\n\n    id = Column(Integer, primary_key=True)\n    customer_id = Column(Integer, ForeignKey('customer.id'))\n    date_placed = Column(DateTime)\n    total_amount = Column(Integer)\n",
+            "sqlite_create": "CREATE TABLE order (\n    id INTEGER PRIMARY KEY,\n    customer_id INTEGER,\n    date_placed DATETIME,\n    total_amount INTEGER,\n    FOREIGN KEY(customer_id) REFERENCES customer(id)\n);",
+            "description": "This table records each order placed by a customer.",
+            "name": "Order"
+        },
+        {
+            "classname": "OrderItem",
+            "code": "class OrderItem(Base):\n    \"\"\"description: This table captures the products in each order.\"\"\"\n    __tablename__ = 'order_item'\n\n    id = Column(Integer, primary_key=True)\n    order_id = Column(Integer, ForeignKey('order.id'))\n    product_id = Column(Integer, ForeignKey('product.id'))\n    quantity = Column(Integer)\n",
+            "sqlite_create": "CREATE TABLE order_item (\n    id INTEGER PRIMARY KEY,\n    order_id INTEGER,\n    product_id INTEGER,\n    quantity INTEGER,\n    FOREIGN KEY(order_id) REFERENCES order(id),\n    FOREIGN KEY(product_id) REFERENCES product(id)\n);",
+            "description": "This table captures the products in each order.",
+            "name": "OrderItem"
+        },
+        {
+            "classname": "SalesRep",
+            "code": "class SalesRep(Base):\n    \"\"\"description: This table stores information about sales representatives.\"\"\"\n    __tablename__ = 'sales_rep'\n\n    id = Column(Integer, primary_key=True)\n    first_name = Column(String)\n    last_name = Column(String)\n    email = Column(String)\n",
+            "sqlite_create": "CREATE TABLE sales_rep (\n    id INTEGER PRIMARY KEY,\n    first_name TEXT,\n    last_name TEXT,\n    email TEXT\n);",
+            "description": "This table stores information about sales representatives.",
+            "name": "SalesRep"
+        },
+        {
+            "classname": "CustomerContact",
+            "code": "class CustomerContact(Base):\n    \"\"\"description: This table records customer contacts and interactions.\"\"\"\n    __tablename__ = 'customer_contact'\n\n    id = Column(Integer, primary_key=True)\n    customer_id = Column(Integer, ForeignKey('customer.id'))\n    sales_rep_id = Column(Integer, ForeignKey('sales_rep.id'))\n    contact_date = Column(DateTime)\n    notes = Column(String)\n",
+            "sqlite_create": "CREATE TABLE customer_contact (\n    id INTEGER PRIMARY KEY,\n    customer_id INTEGER,\n    sales_rep_id INTEGER,\n    contact_date DATETIME,\n    notes TEXT,\n    FOREIGN KEY(customer_id) REFERENCES customer(id),\n    FOREIGN KEY(sales_rep_id) REFERENCES sales_rep(id)\n);",
+            "description": "This table records customer contacts and interactions.",
+            "name": "CustomerContact"
+        },
+        {
+            "classname": "Category",
+            "code": "class Category(Base):\n    \"\"\"description: This table stores product categories.\"\"\"\n    __tablename__ = 'category'\n\n    id = Column(Integer, primary_key=True)\n    name = Column(String)\n    description = Column(String)\n",
+            "sqlite_create": "CREATE TABLE category (\n    id INTEGER PRIMARY KEY,\n    name TEXT,\n    description TEXT\n);",
+            "description": "This table stores product categories.",
+            "name": "Category"
+        },
+        {
+            "classname": "ProductCategory",
+            "code": "class ProductCategory(Base):\n    \"\"\"description: This table maps products to categories.\"\"\"\n    __tablename__ = 'product_category'\n\n    id = Column(Integer, primary_key=True)\n    product_id = Column(Integer, ForeignKey('product.id'))\n    category_id = Column(Integer, ForeignKey('category.id'))\n",
+            "sqlite_create": "CREATE TABLE product_category (\n    id INTEGER PRIMARY KEY,\n    product_id INTEGER,\n    category_id INTEGER,\n    FOREIGN KEY(product_id) REFERENCES product(id),\n    FOREIGN KEY(category_id) REFERENCES category(id)\n);",
+            "description": "This table maps products to categories.",
+            "name": "ProductCategory"
+        },
+        {
+            "classname": "Discount",
+            "code": "class Discount(Base):\n    \"\"\"description: This table defines available discounts for products.\"\"\"\n    __tablename__ = 'discount'\n\n    id = Column(Integer, primary_key=True)\n    product_id = Column(Integer, ForeignKey('product.id'))\n    discount_amount = Column(Integer)\n    start_date = Column(DateTime)\n    end_date = Column(DateTime)\n",
+            "sqlite_create": "CREATE TABLE discount (\n    id INTEGER PRIMARY KEY,\n    product_id INTEGER,\n    discount_amount INTEGER,\n    start_date DATETIME,\n    end_date DATETIME,\n    FOREIGN KEY(product_id) REFERENCES product(id)\n);",
+            "description": "This table defines available discounts for products.",
+            "name": "Discount"
+        },
+        {
+            "classname": "Return",
+            "code": "class Return(Base):\n    \"\"\"description: This table records product returns by customers.\"\"\"\n    __tablename__ = 'return'\n\n    id = Column(Integer, primary_key=True)\n    order_item_id = Column(Integer, ForeignKey('order_item.id'))\n    return_date = Column(DateTime)\n    refund_amount = Column(Integer)\n",
+            "sqlite_create": "CREATE TABLE return (\n    id INTEGER PRIMARY KEY,\n    order_item_id INTEGER,\n    return_date DATETIME,\n    refund_amount INTEGER,\n    FOREIGN KEY(order_item_id) REFERENCES order_item(id)\n);",
+            "description": "This table records product returns by customers.",
+            "name": "Return"
+        },
+        {
+            "classname": "Supplier",
+            "code": "class Supplier(Base):\n    \"\"\"description: This table stores supplier information.\"\"\"\n    __tablename__ = 'supplier'\n\n    id = Column(Integer, primary_key=True)\n    name = Column(String)\n    address = Column(String)\n    phone = Column(String)\n    email = Column(String)\n",
+            "sqlite_create": "CREATE TABLE supplier (\n    id INTEGER PRIMARY KEY,\n    name TEXT,\n    address TEXT,\n    phone TEXT,\n    email TEXT\n);",
+            "description": "This table stores supplier information.",
+            "name": "Supplier"
+        },
+        {
+            "classname": "ProductSupplier",
+            "code": "class ProductSupplier(Base):\n    \"\"\"description: This junction table maps products to suppliers.\"\"\"\n    __tablename__ = 'product_supplier'\n\n    id = Column(Integer, primary_key=True)\n    product_id = Column(Integer, ForeignKey('product.id'))\n    supplier_id = Column(Integer, ForeignKey('supplier.id'))\n",
+            "sqlite_create": "CREATE TABLE product_supplier (\n    id INTEGER PRIMARY KEY,\n    product_id INTEGER,\n    supplier_id INTEGER,\n    FOREIGN KEY(product_id) REFERENCES product(id),\n    FOREIGN KEY(supplier_id) REFERENCES supplier(id)\n);",
+            "description": "This junction table maps products to suppliers.",
+            "name": "ProductSupplier"
+        }
+    ],
+    "rules": [],
+    "test_data": "Test data for tables includes sample customers, products, orders, order items, sales reps, contacts, categories, discounts, returns, suppliers, and product-supplier links.",
+    "test_data_rows": [
+        {
+            "test_data_row_variable": "customer1",
+            "code": "customer1 = Customer(first_name='John', last_name='Doe', email='johndoe@example.com', phone_number='1234567890', date_joined=date(2023, 1, 15))"
+        },
+        {
+            "test_data_row_variable": "customer2",
+            "code": "customer2 = Customer(first_name='Jane', last_name='Smith', email='janesmith@example.com', phone_number='0987654321', date_joined=date(2023, 2, 20))"
+        },
+        {
+            "test_data_row_variable": "customer3",
+            "code": "customer3 = Customer(first_name='Alice', last_name='Brown', email='alicebrown@example.com', phone_number='1122334455', date_joined=date(2023, 3, 10))"
+        },
+        {
+            "test_data_row_variable": "customer4",
+            "code": "customer4 = Customer(first_name='Bob', last_name='White', email='bobwhite@example.com', phone_number='5566778899', date_joined=date(2023, 4, 25))"
+        },
+        {
+            "test_data_row_variable": "product1",
+            "code": "product1 = Product(name='Laptop', description='14 inch laptop', price=1000, stock=20)"
+        },
+        {
+            "test_data_row_variable": "product2",
+            "code": "product2 = Product(name='Smartphone', description='Latest Model Smartphone', price=800, stock=50)"
+        },
+        {
+            "test_data_row_variable": "product3",
+            "code": "product3 = Product(name='Headphones', description='Noise Cancelling', price=150, stock=100)"
+        },
+        {
+            "test_data_row_variable": "product4",
+            "code": "product4 = Product(name='Smartwatch', description='Fitness Smartwatch', price=250, stock=60)"
+        },
+        {
+            "test_data_row_variable": "order1",
+            "code": "order1 = Order(customer_id=1, date_placed=date(2023, 5, 1), total_amount=1150)"
+        },
+        {
+            "test_data_row_variable": "order2",
+            "code": "order2 = Order(customer_id=2, date_placed=date(2023, 5, 17), total_amount=800)"
+        },
+        {
+            "test_data_row_variable": "order3",
+            "code": "order3 = Order(customer_id=3, date_placed=date(2023, 6, 3), total_amount=250)"
+        },
+        {
+            "test_data_row_variable": "order4",
+            "code": "order4 = Order(customer_id=4, date_placed=date(2023, 6, 10), total_amount=150)"
+        },
+        {
+            "test_data_row_variable": "order_item1",
+            "code": "order_item1 = OrderItem(order_id=1, product_id=1, quantity=1)"
+        },
+        {
+            "test_data_row_variable": "order_item2",
+            "code": "order_item2 = OrderItem(order_id=2, product_id=2, quantity=1)"
+        },
+        {
+            "test_data_row_variable": "order_item3",
+            "code": "order_item3 = OrderItem(order_id=3, product_id=4, quantity=1)"
+        },
+        {
+            "test_data_row_variable": "order_item4",
+            "code": "order_item4 = OrderItem(order_id=4, product_id=3, quantity=1)"
+        },
+        {
+            "test_data_row_variable": "sales_rep1",
+            "code": "sales_rep1 = SalesRep(first_name='Emma', last_name='Brown', email='emma@example.com')"
+        },
+        {
+            "test_data_row_variable": "sales_rep2",
+            "code": "sales_rep2 = SalesRep(first_name='Liam', last_name='Green', email='liam@example.com')"
+        },
+        {
+            "test_data_row_variable": "sales_rep3",
+            "code": "sales_rep3 = SalesRep(first_name='Olivia', last_name='Red', email='olivia@example.com')"
+        },
+        {
+            "test_data_row_variable": "sales_rep4",
+            "code": "sales_rep4 = SalesRep(first_name='Noah', last_name='Blue', email='noah@example.com')"
+        },
+        {
+            "test_data_row_variable": "customer_contact1",
+            "code": "customer_contact1 = CustomerContact(customer_id=1, sales_rep_id=1, contact_date=date(2023, 5, 1), notes='Discussed new products.')"
+        },
+        {
+            "test_data_row_variable": "customer_contact2",
+            "code": "customer_contact2 = CustomerContact(customer_id=2, sales_rep_id=2, contact_date=date(2023, 5, 5), notes='Assisted with order issues.')"
+        },
+        {
+            "test_data_row_variable": "customer_contact3",
+            "code": "customer_contact3 = CustomerContact(customer_id=3, sales_rep_id=3, contact_date=date(2023, 5, 8), notes='Feedback on recent purchase.')"
+        },
+        {
+            "test_data_row_variable": "customer_contact4",
+            "code": "customer_contact4 = CustomerContact(customer_id=4, sales_rep_id=4, contact_date=date(2023, 5, 10), notes='Interest in loyalty program.')"
+        },
+        {
+            "test_data_row_variable": "category1",
+            "code": "category1 = Category(name='Electronics', description='Electronic gadgets and devices.')"
+        },
+        {
+            "test_data_row_variable": "category2",
+            "code": "category2 = Category(name='Accessories', description='Electronic accessories.')"
+        },
+        {
+            "test_data_row_variable": "category3",
+            "code": "category3 = Category(name='Home Appliances', description='Appliances for home use.')"
+        },
+        {
+            "test_data_row_variable": "category4",
+            "code": "category4 = Category(name='Weables', description='Wearable technology devices.')"
+        },
+        {
+            "test_data_row_variable": "discount1",
+            "code": "discount1 = Discount(product_id=1, discount_amount=100, start_date=date(2023, 5, 1), end_date=date(2023, 5, 31))"
+        },
+        {
+            "test_data_row_variable": "discount2",
+            "code": "discount2 = Discount(product_id=2, discount_amount=150, start_date=date(2023, 6, 1), end_date=date(2023, 6, 15))"
+        },
+        {
+            "test_data_row_variable": "discount3",
+            "code": "discount3 = Discount(product_id=3, discount_amount=20, start_date=date(2023, 5, 5), end_date=date(2023, 5, 20))"
+        },
+        {
+            "test_data_row_variable": "discount4",
+            "code": "discount4 = Discount(product_id=4, discount_amount=50, start_date=date(2023, 6, 10), end_date=date(2023, 6, 25))"
+        },
+        {
+            "test_data_row_variable": "return1",
+            "code": "return1 = Return(order_item_id=1, return_date=date(2023, 5, 3), refund_amount=50)"
+        },
+        {
+            "test_data_row_variable": "return2",
+            "code": "return2 = Return(order_item_id=2, return_date=date(2023, 5, 20), refund_amount=75)"
+        },
+        {
+            "test_data_row_variable": "return3",
+            "code": "return3 = Return(order_item_id=3, return_date=date(2023, 6, 5), refund_amount=25)"
+        },
+        {
+            "test_data_row_variable": "return4",
+            "code": "return4 = Return(order_item_id=4, return_date=date(2023, 6, 15), refund_amount=30)"
+        },
+        {
+            "test_data_row_variable": "supplier1",
+            "code": "supplier1 = Supplier(name='Global Inc.', address='123 Street, City', phone='111222333', email='contact@global.com')"
+        },
+        {
+            "test_data_row_variable": "supplier2",
+            "code": "supplier2 = Supplier(name='Tech Corp.', address='456 Avenue, City', phone='444555666', email='info@techcorp.com')"
+        },
+        {
+            "test_data_row_variable": "supplier3",
+            "code": "supplier3 = Supplier(name='Gadget Ltd.', address='789 Boulevard, City', phone='777888999', email='sales@gadget.com')"
+        },
+        {
+            "test_data_row_variable": "supplier4",
+            "code": "supplier4 = Supplier(name='Device Co.', address='101 Road, City', phone='123123123', email='support@device.com')"
+        },
+        {
+            "test_data_row_variable": "product_supplier1",
+            "code": "product_supplier1 = ProductSupplier(product_id=1, supplier_id=1)"
+        },
+        {
+            "test_data_row_variable": "product_supplier2",
+            "code": "product_supplier2 = ProductSupplier(product_id=2, supplier_id=2)"
+        },
+        {
+            "test_data_row_variable": "product_supplier3",
+            "code": "product_supplier3 = ProductSupplier(product_id=3, supplier_id=3)"
+        },
+        {
+            "test_data_row_variable": "product_supplier4",
+            "code": "product_supplier4 = ProductSupplier(product_id=4, supplier_id=4)"
+        }
+    ],
+    "test_data_sqlite": "INSERT INTO customer (first_name, last_name, email, phone_number, date_joined) VALUES ('John', 'Doe', 'johndoe@example.com', '1234567890', '2023-01-15');\nINSERT INTO customer (first_name, last_name, email, phone_number, date_joined) VALUES ('Jane', 'Smith', 'janesmith@example.com', '0987654321', '2023-02-20');\nINSERT INTO customer (first_name, last_name, email, phone_number, date_joined) VALUES ('Alice', 'Brown', 'alicebrown@example.com', '1122334455', '2023-03-10');\nINSERT INTO customer (first_name, last_name, email, phone_number, date_joined) VALUES ('Bob', 'White', 'bobwhite@example.com', '5566778899', '2023-04-25');\n\nINSERT INTO product (name, description, price, stock) VALUES ('Laptop', '14 inch laptop', 1000, 20);\nINSERT INTO product (name, description, price, stock) VALUES ('Smartphone', 'Latest Model Smartphone', 800, 50);\nINSERT INTO product (name, description, price, stock) VALUES ('Headphones', 'Noise Cancelling', 150, 100);\nINSERT INTO product (name, description, price, stock) VALUES ('Smartwatch', 'Fitness Smartwatch', 250, 60);\n\nINSERT INTO \"order\" (customer_id, date_placed, total_amount) VALUES (1, '2023-05-01', 1150);\nINSERT INTO \"order\" (customer_id, date_placed, total_amount) VALUES (2, '2023-05-17', 800);\nINSERT INTO \"order\" (customer_id, date_placed, total_amount) VALUES (3, '2023-06-03', 250);\nINSERT INTO \"order\" (customer_id, date_placed, total_amount) VALUES (4, '2023-06-10', 150);\n\nINSERT INTO order_item (order_id, product_id, quantity) VALUES (1, 1, 1);\nINSERT INTO order_item (order_id, product_id, quantity) VALUES (2, 2, 1);\nINSERT INTO order_item (order_id, product_id, quantity) VALUES (3, 4, 1);\nINSERT INTO order_item (order_id, product_id, quantity) VALUES (4, 3, 1);\n\nINSERT INTO sales_rep (first_name, last_name, email) VALUES ('Emma', 'Brown', 'emma@example.com');\nINSERT INTO sales_rep (first_name, last_name, email) VALUES ('Liam', 'Green', 'liam@example.com');\nINSERT INTO sales_rep (first_name, last_name, email) VALUES ('Olivia', 'Red', 'olivia@example.com');\nINSERT INTO sales_rep (first_name, last_name, email) VALUES ('Noah', 'Blue', 'noah@example.com');\n\nINSERT INTO customer_contact (customer_id, sales_rep_id, contact_date, notes) VALUES (1, 1, '2023-05-01', 'Discussed new products.');\nINSERT INTO customer_contact (customer_id, sales_rep_id, contact_date, notes) VALUES (2, 2, '2023-05-05', 'Assisted with order issues.');\nINSERT INTO customer_contact (customer_id, sales_rep_id, contact_date, notes) VALUES (3, 3, '2023-05-08', 'Feedback on recent purchase.');\nINSERT INTO customer_contact (customer_id, sales_rep_id, contact_date, notes) VALUES (4, 4, '2023-05-10', 'Interest in loyalty program.');\n\nINSERT INTO category (name, description) VALUES ('Electronics', 'Electronic gadgets and devices.');\nINSERT INTO category (name, description) VALUES ('Accessories', 'Electronic accessories.');\nINSERT INTO category (name, description) VALUES ('Home Appliances', 'Appliances for home use.');\nINSERT INTO category (name, description) VALUES ('Weables', 'Wearable technology devices.');\n\nINSERT INTO discount (product_id, discount_amount, start_date, end_date) VALUES (1, 100, '2023-05-01', '2023-05-31');\nINSERT INTO discount (product_id, discount_amount, start_date, end_date) VALUES (2, 150, '2023-06-01', '2023-06-15');\nINSERT INTO discount (product_id, discount_amount, start_date, end_date) VALUES (3, 20, '2023-05-05', '2023-05-20');\nINSERT INTO discount (product_id, discount_amount, start_date, end_date) VALUES (4, 50, '2023-06-10', '2023-06-25');\n\nINSERT INTO \"return\" (order_item_id, return_date, refund_amount) VALUES (1, '2023-05-03', 50);\nINSERT INTO \"return\" (order_item_id, return_date, refund_amount) VALUES (2, '2023-05-20', 75);\nINSERT INTO \"return\" (order_item_id, return_date, refund_amount) VALUES (3, '2023-06-05', 25);\nINSERT INTO \"return\" (order_item_id, return_date, refund_amount) VALUES (4, '2023-06-15', 30);\n\nINSERT INTO supplier (name, address, phone, email) VALUES ('Global Inc.', '123 Street, City', '111222333', 'contact@global.com');\nINSERT INTO supplier (name, address, phone, email) VALUES ('Tech Corp.', '456 Avenue, City', '444555666', 'info@techcorp.com');\nINSERT INTO supplier (name, address, phone, email) VALUES ('Gadget Ltd.', '789 Boulevard, City', '777888999', 'sales@gadget.com');\nINSERT INTO supplier (name, address, phone, email) VALUES ('Device Co.', '101 Road, City', '123123123', 'support@device.com');\n\nINSERT INTO product_supplier (product_id, supplier_id) VALUES (1, 1);\nINSERT INTO product_supplier (product_id, supplier_id) VALUES (2, 2);\nINSERT INTO product_supplier (product_id, supplier_id) VALUES (3, 3);\nINSERT INTO product_supplier (product_id, supplier_id) VALUES (4, 4);",
+    "name": "CRMDataSystem"
+}
